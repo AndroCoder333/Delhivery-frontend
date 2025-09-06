@@ -433,6 +433,7 @@ const RiderListing = () => {
                 style={styles.riderCard}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
+                onClick={() => (window.location.href = `/rider-details/${rider._id}`)}
               >
                 <div style={styles.riderCardBefore}></div>
                 <div style={styles.riderHeader}>
