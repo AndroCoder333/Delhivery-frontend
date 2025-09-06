@@ -305,8 +305,7 @@ const RiderListing = () => {
 
   const handleAddRiderClick = () => {
     console.log("Navigate to Add Rider form");
-    // Add your navigation logic here
-    // Example: navigate('/rider/add') or open modal
+    window.location.href = "add-new-rider";
   };
 
   const handleAddButtonHover = (e, isEnter) => {

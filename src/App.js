@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import "./App.css";
 import HomeScreen from "./screen/HomeScreen";
 import RiderListing from "./screen/RiderManagment/RiderListing";
+import AddNewRider from "./screen/RiderManagment/AddNewRider";
 
 function App() {
   return (
@@ -10,7 +11,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomeScreen />} />
         <Route path="/rider-listing" element={<RiderListing />} />
-        {/* {/* <Route path="/rider-management" element={<RiderManagement />} /> */}
+      <Route path="/add-new-rider" element={<AddNewRider />} />
       </Routes>
     </BrowserRouter>
   );
