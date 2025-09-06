@@ -319,7 +319,7 @@ const RiderDetails = () => {
 
   const handleUpdate = () => {
     console.log("Navigate to update rider:", id);
-    // navigate(`/rider/edit/${id}`);
+    navigate(`/update-details/${id}`);
   };
 
   const handleDebt = () => {

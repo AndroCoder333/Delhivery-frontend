@@ -5,6 +5,7 @@ import HomeScreen from "./screen/HomeScreen";
 import RiderListing from "./screen/RiderManagment/RiderListing";
 import AddNewRider from "./screen/RiderManagment/AddNewRider";
 import RiderDetails from "./screen/RiderManagment/RiderDetails";
+import UpdateRider from "./screen/RiderManagment/UpdateRider";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/rider-listing" element={<RiderListing />} />
         <Route path="/add-new-rider" element={<AddNewRider />} />
         <Route path="/rider-details/:id" element={<RiderDetails />} />
+        <Route path="/update-details/:id" element={<UpdateRider />} />
       </Routes>
     </BrowserRouter>
   );
