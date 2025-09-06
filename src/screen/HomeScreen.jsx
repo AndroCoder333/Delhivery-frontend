@@ -125,8 +125,7 @@ const HomeScreen = () => {
   };
 
   const handleRiderManagement = () => {
-    console.log("Navigate to Rider Management");
-    // Add your navigation logic here
+    window.location.href = "rider-listing"
   };
 
   const handleExpenseManagement = () => {
@@ -176,7 +175,7 @@ const HomeScreen = () => {
                   <path d="m22 2-5 10-5-5z" />
                 </svg>
               </div>
-              <div style={styles.cardContent}>
+              <div style={styles.cardContent} onClick={handleRiderManagement}>
                 <h3 style={styles.cardTitle}>Rider Management</h3>
                 <p style={styles.cardDescription}>
                   Comprehensive rider oversight, route optimization, and
