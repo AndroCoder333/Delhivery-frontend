@@ -329,7 +329,7 @@ const RiderDetails = () => {
 
   const handleDeliveryHistory = () => {
     console.log("Navigate to delivery history for rider:", id);
-    // navigate(`/rider/delivery-history/${id}`);
+    navigate(`/delhivery-history/${id}`);
   };
 
   const handlePaidHistory = () => {

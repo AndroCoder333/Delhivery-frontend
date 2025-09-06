@@ -6,6 +6,8 @@ import RiderListing from "./screen/RiderManagment/RiderListing";
 import AddNewRider from "./screen/RiderManagment/AddNewRider";
 import RiderDetails from "./screen/RiderManagment/RiderDetails";
 import UpdateRider from "./screen/RiderManagment/UpdateRider";
+import DeliveryHistoryList from "./screen/RiderManagment/DelhiveryHistoryList";
+import AddDelhiveryHistory from "./screen/RiderManagment/AddDelhiveryHistory";
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
         <Route path="/add-new-rider" element={<AddNewRider />} />
         <Route path="/rider-details/:id" element={<RiderDetails />} />
         <Route path="/update-details/:id" element={<UpdateRider />} />
+        <Route path="/delhivery-history/:riderId" element={<DeliveryHistoryList />} />
+        <Route path="/add-delhivery-history/:riderId" element={<AddDelhiveryHistory />} />
       </Routes>
     </BrowserRouter>
   );
