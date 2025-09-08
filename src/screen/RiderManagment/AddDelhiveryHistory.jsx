@@ -414,7 +414,7 @@ const AddDeliveryHistory = () => {
       // Auto-hide success message and redirect after 3 seconds
       setTimeout(() => {
         setSuccess(false);
-        navigate(`/delhivery-history/${riderId}`);
+        navigate(`/rider-details/${riderId}`);
       }, 3000);
     } catch (error) {
       console.error("Error adding delivery history:", error);
@@ -451,7 +451,7 @@ const AddDeliveryHistory = () => {
   };
 
   const handleBack = () => {
-    navigate(`/delivery-history/${riderId}`);
+    navigate(`/rider-details/${riderId}`);
   };
 
   const handleInputFocus = (e) => {
@@ -539,8 +539,8 @@ const AddDeliveryHistory = () => {
 
         {/* Rider ID Display */}
         <div style={styles.riderInfo}>
-          <div style={styles.riderIdText}>{formData.riderId}</div>
-          <div style={styles.riderIdLabel}>Rider ID</div>
+          {/* <div style={styles.riderIdText}>{formData.riderId}</div> */}
+          <div style={styles.riderIdLabel}>Rider ID : {formData.riderId}</div>
         </div>
 
         <div style={styles.formContainer}>

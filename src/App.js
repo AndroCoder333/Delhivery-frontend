@@ -9,6 +9,7 @@ import UpdateRider from "./screen/RiderManagment/UpdateRider";
 import DeliveryHistoryList from "./screen/RiderManagment/DelhiveryHistoryList";
 import AddDelhiveryHistory from "./screen/RiderManagment/AddDelhiveryHistory";
 import DebtManagement from "./screen/RiderManagment/DebtManagement";
+import PaidHistoryList from "./screen/RiderManagment/PaidHistoryList";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/delhivery-history/:riderId" element={<DeliveryHistoryList />}  />
         <Route path="/add-delhivery-history/:riderId" element={<AddDelhiveryHistory />}/>
         <Route path="/debt-management/:riderId" element={<DebtManagement />} />
+        <Route path="/paid-history/:riderId" element={<PaidHistoryList />} />
       </Routes>
     </BrowserRouter>
   );

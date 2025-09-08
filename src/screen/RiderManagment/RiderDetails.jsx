@@ -339,7 +339,7 @@ const RiderDetails = () => {
 
   const handlePaidHistory = () => {
     console.log("Navigate to paid amount history for rider:", id);
-    // navigate(`/rider/paid-history/${id}`);
+    navigate(`/paid-history/${id}`);
   };
 
   const handleBack = () => {
