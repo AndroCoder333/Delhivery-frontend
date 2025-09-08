@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams,useNavigate } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import Header from "../../components/Header";
 
 const DeliveryHistoryList = () => {
-    const navigate = useNavigate();
-  const { riderId } = useParams(); // Get riderId from URL if routing is set up
+  const { riderId } = useParams();
+  const navigate = useNavigate();
   const [historyData, setHistoryData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filterPaid, setFilterPaid] = useState(false); // Filter for paid/unpaid records
+  const [sortOrder, setSortOrder] = useState("asc");
 
   const styles = {
     container: {
@@ -65,38 +65,22 @@ const DeliveryHistoryList = () => {
       color: "#94a3b8",
       lineHeight: "1.6",
     },
-    filterSection: {
+    controlsSection: {
       display: "flex",
       gap: "12px",
       alignItems: "center",
+      flexWrap: "wrap",
     },
-    filterButton: {
+    sortButton: {
       padding: "12px 20px",
       fontSize: "14px",
       fontWeight: "600",
-      border: "none",
+      color: "#94a3b8",
+      background: "rgba(148, 163, 184, 0.1)",
+      border: "1px solid rgba(148, 163, 184, 0.2)",
       borderRadius: "8px",
       cursor: "pointer",
       transition: "all 0.3s ease",
-    },
-    activeFilter: {
-      background: "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
-      color: "#ffffff",
-      boxShadow: "0 6px 20px rgba(59, 130, 246, 0.3)",
-    },
-    inactiveFilter: {
-      background: "rgba(148, 163, 184, 0.1)",
-      color: "#94a3b8",
-      border: "1px solid rgba(148, 163, 184, 0.2)",
-    },
-    // Add History Button Styles
-    addHistorySection: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: "24px",
-      flexWrap: "wrap",
-      gap: "16px",
     },
     addHistoryButton: {
       display: "flex",
@@ -115,6 +99,31 @@ const DeliveryHistoryList = () => {
     addHistoryButtonIcon: {
       marginRight: "8px",
       fontSize: "18px",
+    },
+    summaryCards: {
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+      gap: "20px",
+      marginBottom: "32px",
+    },
+    summaryCard: {
+      background: "rgba(15, 23, 42, 0.3)",
+      border: "1px solid rgba(148, 163, 184, 0.05)",
+      borderRadius: "12px",
+      padding: "20px",
+      textAlign: "center",
+    },
+    summaryNumber: {
+      fontSize: "24px",
+      fontWeight: "700",
+      color: "#ffffff",
+      marginBottom: "8px",
+    },
+    summaryLabel: {
+      fontSize: "12px",
+      color: "#64748b",
+      textTransform: "uppercase",
+      letterSpacing: "0.05em",
     },
     tableContainer: {
       background:
@@ -187,25 +196,9 @@ const DeliveryHistoryList = () => {
       color: "#3b82f6",
       fontWeight: "600",
     },
-    companyValue: {
+    returnValue: {
       color: "#8b5cf6",
       fontWeight: "600",
-    },
-    paidStatus: {
-      padding: "4px 8px",
-      borderRadius: "12px",
-      fontSize: "11px",
-      fontWeight: "600",
-      textTransform: "uppercase",
-      letterSpacing: "0.05em",
-    },
-    paidTrue: {
-      background: "rgba(16, 185, 129, 0.2)",
-      color: "#10b981",
-    },
-    paidFalse: {
-      background: "rgba(239, 68, 68, 0.2)",
-      color: "#ef4444",
     },
     loadingContainer: {
       display: "flex",
@@ -273,31 +266,6 @@ const DeliveryHistoryList = () => {
       fontSize: "14px",
       color: "#64748b",
     },
-    summaryCards: {
-      display: "grid",
-      gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-      gap: "20px",
-      marginBottom: "32px",
-    },
-    summaryCard: {
-      background: "rgba(15, 23, 42, 0.3)",
-      border: "1px solid rgba(148, 163, 184, 0.05)",
-      borderRadius: "12px",
-      padding: "20px",
-      textAlign: "center",
-    },
-    summaryNumber: {
-      fontSize: "24px",
-      fontWeight: "700",
-      color: "#ffffff",
-      marginBottom: "8px",
-    },
-    summaryLabel: {
-      fontSize: "12px",
-      color: "#64748b",
-      textTransform: "uppercase",
-      letterSpacing: "0.05em",
-    },
   };
 
   // Spinner component
@@ -324,7 +292,7 @@ const DeliveryHistoryList = () => {
 
   useEffect(() => {
     fetchDeliveryHistory();
-  }, [riderId, filterPaid]);
+  }, [riderId, sortOrder]);
 
   const fetchDeliveryHistory = async () => {
     try {
@@ -332,11 +300,11 @@ const DeliveryHistoryList = () => {
       setError(null);
 
       // Use riderId from params or default
-      const riderIdToUse = riderId || "68bc868f1047a6cb37490661";
+      const riderIdToUse = riderId || "68bdce297d06247fe2bd85fa";
 
       // Build query parameters
       const queryParams = new URLSearchParams({
-        isPaid: filterPaid.toString(),
+        sortOrder: sortOrder,
         riderId: riderIdToUse,
       });
 
@@ -380,29 +348,44 @@ const DeliveryHistoryList = () => {
     }
   };
 
-  const handleFilterChange = (isPaid) => {
-    setFilterPaid(isPaid);
+  const handleSortToggle = () => {
+    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
   };
 
-  const handleBack = () => {
-    window.history.back();
-  };
-
-  // Add History Button Handler
   const handleAddHistory = () => {
     console.log("Add History button clicked for rider:", riderId);
     navigate(`/add-delhivery-history/${riderId}`);
-    // Add your navigation logic here
-    // Example: navigate(`/rider/add-history/${riderId}`) or open modal
   };
 
-  const handleAddHistoryHover = (e, isEnter) => {
+  const handleBack = () => {
+    navigate(`/rider-details/${riderId}`);
+  };
+
+  const handleButtonHover = (e, isEnter, buttonType) => {
     if (isEnter) {
-      e.target.style.transform = "translateY(-2px) scale(1.05)";
-      e.target.style.boxShadow = "0 12px 30px rgba(16, 185, 129, 0.4)";
+      if (buttonType === "add") {
+        e.target.style.transform = "translateY(-2px) scale(1.05)";
+        e.target.style.boxShadow = "0 12px 30px rgba(16, 185, 129, 0.4)";
+      } else if (buttonType === "sort") {
+        e.target.style.background = "rgba(148, 163, 184, 0.2)";
+        e.target.style.color = "#e2e8f0";
+        e.target.style.transform = "scale(1.05)";
+      } else if (buttonType === "back") {
+        e.target.style.background = "rgba(148, 163, 184, 0.2)";
+        e.target.style.color = "#e2e8f0";
+      }
     } else {
-      e.target.style.transform = "translateY(0) scale(1)";
-      e.target.style.boxShadow = "0 8px 25px rgba(16, 185, 129, 0.3)";
+      if (buttonType === "add") {
+        e.target.style.transform = "translateY(0) scale(1)";
+        e.target.style.boxShadow = "0 8px 25px rgba(16, 185, 129, 0.3)";
+      } else if (buttonType === "sort") {
+        e.target.style.background = "rgba(148, 163, 184, 0.1)";
+        e.target.style.color = "#94a3b8";
+        e.target.style.transform = "scale(1)";
+      } else if (buttonType === "back") {
+        e.target.style.background = "rgba(148, 163, 184, 0.1)";
+        e.target.style.color = "#94a3b8";
+      }
     }
   };
 
@@ -434,8 +417,8 @@ const DeliveryHistoryList = () => {
         totalDelivered: acc.totalDelivered + record.successfulDelivered,
         totalRVP: acc.totalRVP + record.successfulRVP,
         totalCanceled: acc.totalCanceled + record.canceledByCode,
+        totalReturned: acc.totalReturned + (record.parcelsReturnInHub || 0),
         totalRiderEarnings: acc.totalRiderEarnings + record.riderEarning,
-        totalCompanyMargin: acc.totalCompanyMargin + record.companyMargin,
         totalCashDeposited: acc.totalCashDeposited + record.cashedDeposited,
       }),
       {
@@ -443,8 +426,8 @@ const DeliveryHistoryList = () => {
         totalDelivered: 0,
         totalRVP: 0,
         totalCanceled: 0,
+        totalReturned: 0,
         totalRiderEarnings: 0,
-        totalCompanyMargin: 0,
         totalCashDeposited: 0,
       }
     );
@@ -474,14 +457,8 @@ const DeliveryHistoryList = () => {
           <button
             style={styles.backButton}
             onClick={handleBack}
-            onMouseEnter={(e) => {
-              e.target.style.background = "rgba(148, 163, 184, 0.2)";
-              e.target.style.color = "#e2e8f0";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = "rgba(148, 163, 184, 0.1)";
-              e.target.style.color = "#94a3b8";
-            }}
+            onMouseEnter={(e) => handleButtonHover(e, true, "back")}
+            onMouseLeave={(e) => handleButtonHover(e, false, "back")}
           >
             ← Back
           </button>
@@ -518,14 +495,8 @@ const DeliveryHistoryList = () => {
         <button
           style={styles.backButton}
           onClick={handleBack}
-          onMouseEnter={(e) => {
-            e.target.style.background = "rgba(148, 163, 184, 0.2)";
-            e.target.style.color = "#e2e8f0";
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.background = "rgba(148, 163, 184, 0.1)";
-            e.target.style.color = "#94a3b8";
-          }}
+          onMouseEnter={(e) => handleButtonHover(e, true, "back")}
+          onMouseLeave={(e) => handleButtonHover(e, false, "back")}
         >
           ← Back
         </button>
@@ -537,43 +508,26 @@ const DeliveryHistoryList = () => {
               Complete delivery and payment history records
             </p>
           </div>
-          <div style={styles.filterSection}>
+          <div style={styles.controlsSection}>
             <button
-              style={{
-                ...styles.filterButton,
-                ...(filterPaid === false
-                  ? styles.activeFilter
-                  : styles.inactiveFilter),
-              }}
-              onClick={() => handleFilterChange(false)}
+              style={styles.sortButton}
+              onClick={handleSortToggle}
+              onMouseEnter={(e) => handleButtonHover(e, true, "sort")}
+              onMouseLeave={(e) => handleButtonHover(e, false, "sort")}
             >
-              Unpaid
+              {sortOrder === "asc" ? "↑" : "↓"} Sort{" "}
+              {sortOrder === "asc" ? "Ascending" : "Descending"}
             </button>
             <button
-              style={{
-                ...styles.filterButton,
-                ...(filterPaid === true
-                  ? styles.activeFilter
-                  : styles.inactiveFilter),
-              }}
-              onClick={() => handleFilterChange(true)}
+              style={styles.addHistoryButton}
+              onClick={handleAddHistory}
+              onMouseEnter={(e) => handleButtonHover(e, true, "add")}
+              onMouseLeave={(e) => handleButtonHover(e, false, "add")}
             >
-              Paid
+              <span style={styles.addHistoryButtonIcon}>+</span>
+              Add History
             </button>
           </div>
-        </div>
-
-        {/* Add History Button Section */}
-        <div style={styles.addHistorySection}>
-          <button
-            style={styles.addHistoryButton}
-            onClick={handleAddHistory}
-            onMouseEnter={(e) => handleAddHistoryHover(e, true)}
-            onMouseLeave={(e) => handleAddHistoryHover(e, false)}
-          >
-            <span style={styles.addHistoryButtonIcon}>+</span>
-            Add History
-          </button>
         </div>
 
         {/* Summary Cards */}
@@ -592,16 +546,14 @@ const DeliveryHistoryList = () => {
               <div style={styles.summaryLabel}>Successful RVP</div>
             </div>
             <div style={styles.summaryCard}>
+              <div style={styles.summaryNumber}>{summary.totalReturned}</div>
+              <div style={styles.summaryLabel}>Returned to Hub</div>
+            </div>
+            <div style={styles.summaryCard}>
               <div style={styles.summaryNumber}>
                 {formatCurrency(summary.totalRiderEarnings)}
               </div>
               <div style={styles.summaryLabel}>Total Rider Earnings</div>
-            </div>
-            <div style={styles.summaryCard}>
-              <div style={styles.summaryNumber}>
-                {formatCurrency(summary.totalCompanyMargin)}
-              </div>
-              {/* <div style={styles.summaryLabel}>Company Margin</div> */}
             </div>
           </div>
         )}
@@ -612,8 +564,7 @@ const DeliveryHistoryList = () => {
             <div style={styles.emptyIcon}>📦</div>
             <h3 style={styles.emptyTitle}>No Delivery History Found</h3>
             <p style={styles.emptyDescription}>
-              No {filterPaid ? "paid" : "unpaid"} delivery records available for
-              this rider
+              No delivery records available for this rider
             </p>
           </div>
         ) : (
@@ -628,9 +579,9 @@ const DeliveryHistoryList = () => {
                     <th style={styles.th}>Successful Delivered</th>
                     <th style={styles.th}>Successful RVP</th>
                     <th style={styles.th}>Canceled by Code</th>
+                    <th style={styles.th}>Returned to Hub</th>
                     <th style={styles.th}>Cash Deposited</th>
                     <th style={styles.th}>Rider Earning</th>
-                    <th style={styles.th}>Payment Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -656,23 +607,14 @@ const DeliveryHistoryList = () => {
                       <td style={{ ...styles.td, ...styles.cancelValue }}>
                         {record.canceledByCode}
                       </td>
+                      <td style={{ ...styles.td, ...styles.returnValue }}>
+                        {record.parcelsReturnInHub || 0}
+                      </td>
                       <td style={{ ...styles.td, ...styles.earningsValue }}>
                         {formatCurrency(record.cashedDeposited)}
                       </td>
                       <td style={{ ...styles.td, ...styles.earningsValue }}>
                         {formatCurrency(record.riderEarning)}
-                      </td>
-                      <td style={styles.td}>
-                        <span
-                          style={{
-                            ...styles.paidStatus,
-                            ...(record.isPaid
-                              ? styles.paidTrue
-                              : styles.paidFalse),
-                          }}
-                        >
-                          {record.isPaid ? "PAID" : "UNPAID"}
-                        </span>
                       </td>
                     </tr>
                   ))}

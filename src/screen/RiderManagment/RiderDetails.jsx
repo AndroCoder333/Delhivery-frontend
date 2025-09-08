@@ -304,7 +304,12 @@ const RiderDetails = () => {
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/rider/${id}`
       );
-      setRider(response.data);
+
+       const totalAmount = await axios.get(
+         `${process.env.REACT_APP_BASE_URL}/rider/total-amount/${id}`
+       );
+
+      setRider({ ...response.data, totalEarnings: totalAmount.data.data.balance });
     } catch (err) {
       console.error("Error fetching rider details:", err);
       if (err.response?.status === 404) {
@@ -324,7 +329,7 @@ const RiderDetails = () => {
 
   const handleDebt = () => {
     console.log("Navigate to debt management for rider:", id);
-    // navigate(`/rider/debt/${id}`);
+    navigate(`/debt-management/${id}`);
   };
 
   const handleDeliveryHistory = () => {
@@ -519,7 +524,7 @@ const RiderDetails = () => {
                 <h2 style={styles.riderName}>{rider.name}</h2>
                 <p style={styles.riderMobile}>📱 {rider.mobileNumber}</p>
                 <p style={styles.riderEarnings}>
-                  💰 {formatCurrency(rider.totalEarnings)} Total Earnings
+                  💰 {formatCurrency(rider.totalEarnings)} (Payable Amount)
                 </p>
               </div>
             </div>
@@ -565,7 +570,7 @@ const RiderDetails = () => {
             </div>
             <div style={styles.detailCard}>
               <div style={styles.detailLabel}>Rider ID</div>
-              <div style={styles.detailValue}>{rider._id.slice(-6)}</div>
+              <div style={{ ...styles.detailValue, fontSize: "14px" }}>{rider._id}</div>
             </div>
           </div>
         </div>

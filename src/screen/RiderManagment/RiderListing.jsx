@@ -433,7 +433,9 @@ const RiderListing = () => {
                 style={styles.riderCard}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                onClick={() => (window.location.href = `/rider-details/${rider._id}`)}
+                onClick={() =>
+                  (window.location.href = `/rider-details/${rider._id}`)
+                }
               >
                 <div style={styles.riderCardBefore}></div>
                 <div style={styles.riderHeader}>
@@ -447,10 +449,10 @@ const RiderListing = () => {
                     </div>
                   </div>
                   <div style={styles.riderStatItem}>
-                    <span style={styles.riderStatNumber}>
-                      {formatCurrency(rider.totalEarnings)}
-                    </span>
-                    <div style={styles.riderStatLabel}>Total Earnings</div>
+                    {/* <span style={styles.riderStatNumber}>
+                      {formatCurrency(rider.perParcelRate)}
+                    </span> */}
+                    <div style={styles.riderStatLabel}>Rider</div>
                   </div>
                 </div>
               </div>

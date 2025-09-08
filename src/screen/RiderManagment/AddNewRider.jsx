@@ -288,10 +288,9 @@ const AddNewRider = () => {
       });
       setErrors({});
 
-      // Auto-hide success message after 5 seconds
+      window.location.href = "rider-listing";
       setTimeout(() => {
         setSuccess(false);
-        window.location.href = "rider-listing";
       }, 5000);
     } catch (error) {
       console.error("Error adding rider:", error);

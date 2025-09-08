@@ -11,10 +11,10 @@ const AddDeliveryHistory = () => {
     assignedParcels: "",
     successfulDelivered: "",
     canceledByCode: "",
-    amountPerParcelToCompany: "19", // Set default value since field is removed
     successfulRVP: "",
+    parcelsReturnInHub: "",
     cashedDeposited: "",
-    canceledCompensationPerParcel: "",
+    perParcelRate: "",
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -291,6 +291,21 @@ const AddDeliveryHistory = () => {
       newErrors.successfulRVP = "Please enter a valid number (0 or greater)";
     }
 
+    // Parcels return in hub validation
+    if (!formData.parcelsReturnInHub) {
+      newErrors.parcelsReturnInHub = "Parcels return in hub count is required";
+    } else if (
+      isNaN(formData.parcelsReturnInHub) ||
+      Number(formData.parcelsReturnInHub) < 0
+    ) {
+      newErrors.parcelsReturnInHub =
+        "Please enter a valid number (0 or greater)";
+    } else if (
+      Number(formData.parcelsReturnInHub) > Number(formData.assignedParcels)
+    ) {
+      newErrors.parcelsReturnInHub = "Cannot exceed assigned parcels count";
+    }
+
     // Cash deposited validation
     if (!formData.cashedDeposited) {
       newErrors.cashedDeposited = "Cash deposited amount is required";
@@ -301,26 +316,27 @@ const AddDeliveryHistory = () => {
       newErrors.cashedDeposited = "Please enter a valid amount (0 or greater)";
     }
 
-    // Canceled compensation validation
-    if (!formData.canceledCompensationPerParcel) {
-      newErrors.canceledCompensationPerParcel =
-        "Canceled compensation per parcel is required";
+    // Per parcel rate validation
+    if (!formData.perParcelRate) {
+      newErrors.perParcelRate = "Per parcel rate is required";
     } else if (
-      isNaN(formData.canceledCompensationPerParcel) ||
-      Number(formData.canceledCompensationPerParcel) < 0
+      isNaN(formData.perParcelRate) ||
+      Number(formData.perParcelRate) <= 0
     ) {
-      newErrors.canceledCompensationPerParcel =
-        "Please enter a valid amount (0 or greater)";
+      newErrors.perParcelRate = "Please enter a valid rate greater than 0";
+    } else if (Number(formData.perParcelRate) > 1000) {
+      newErrors.perParcelRate = "Rate cannot exceed ₹1000 per parcel";
     }
 
-    // Cross-validation: total delivered + canceled should not exceed assigned
+    // Cross-validation: total of all parcel types should not exceed assigned
     const totalDelivered = Number(formData.successfulDelivered) || 0;
     const totalCanceled = Number(formData.canceledByCode) || 0;
+    const totalReturned = Number(formData.parcelsReturnInHub) || 0;
     const totalAssigned = Number(formData.assignedParcels) || 0;
 
-    if (totalDelivered + totalCanceled > totalAssigned) {
+    if (totalDelivered + totalCanceled + totalReturned > totalAssigned) {
       newErrors.general =
-        "Total of successful delivered and canceled cannot exceed assigned parcels";
+        "Total of delivered, canceled, and returned parcels cannot exceed assigned parcels";
     }
 
     setErrors(newErrors);
@@ -362,13 +378,11 @@ const AddDeliveryHistory = () => {
         riderId: formData.riderId.trim(),
         assignedParcels: Number(formData.assignedParcels),
         successfulDelivered: Number(formData.successfulDelivered),
-        canceledByCode: Number(formData.canceledByCode),
-        amountPerParcelToCompany: Number(formData.amountPerParcelToCompany),
         successfulRVP: Number(formData.successfulRVP),
+        canceledByCode: Number(formData.canceledByCode),
+        parcelsReturnInHub: Number(formData.parcelsReturnInHub),
         cashedDeposited: Number(formData.cashedDeposited),
-        canceledCompensationPerParcel: Number(
-          formData.canceledCompensationPerParcel
-        ),
+        perParcelRate: Number(formData.perParcelRate),
       };
 
       const response = await axios.post(
@@ -391,16 +405,16 @@ const AddDeliveryHistory = () => {
         assignedParcels: "",
         successfulDelivered: "",
         canceledByCode: "",
-        amountPerParcelToCompany: "19",
         successfulRVP: "",
+        parcelsReturnInHub: "",
         cashedDeposited: "",
-        canceledCompensationPerParcel: "",
+        perParcelRate: "",
       });
 
       // Auto-hide success message and redirect after 3 seconds
       setTimeout(() => {
         setSuccess(false);
-        navigate(`/delivery-history/${riderId}`);
+        navigate(`/delhivery-history/${riderId}`);
       }, 3000);
     } catch (error) {
       console.error("Error adding delivery history:", error);
@@ -427,10 +441,10 @@ const AddDeliveryHistory = () => {
       assignedParcels: "",
       successfulDelivered: "",
       canceledByCode: "",
-      amountPerParcelToCompany: "19",
       successfulRVP: "",
+      parcelsReturnInHub: "",
       cashedDeposited: "",
-      canceledCompensationPerParcel: "",
+      perParcelRate: "",
     });
     setErrors({});
     setSuccess(false);
@@ -486,14 +500,14 @@ const AddDeliveryHistory = () => {
   };
 
   const isFormValid = () => {
-    // Only validate the visible fields
     const requiredFields = [
       "assignedParcels",
       "successfulDelivered",
       "canceledByCode",
       "successfulRVP",
+      "parcelsReturnInHub",
       "cashedDeposited",
-      "canceledCompensationPerParcel",
+      "perParcelRate",
     ];
 
     return (
@@ -627,6 +641,35 @@ const AddDeliveryHistory = () => {
                 )}
               </div>
 
+              {/* Successful RVP Field */}
+              <div style={styles.formGroup}>
+                <label htmlFor="successfulRVP" style={styles.label}>
+                  Successful RVP *
+                </label>
+                <div style={styles.inputWrapper}>
+                  <input
+                    type="number"
+                    id="successfulRVP"
+                    name="successfulRVP"
+                    value={formData.successfulRVP}
+                    onChange={handleInputChange}
+                    onFocus={handleInputFocus}
+                    onBlur={handleInputBlur}
+                    style={styles.input}
+                    placeholder="Enter successful RVP count"
+                    min="0"
+                    disabled={loading}
+                  />
+                  <div style={styles.inputIcon}>🔄</div>
+                </div>
+                {errors.successfulRVP && (
+                  <div style={styles.errorMessage}>
+                    <span>⚠️</span>
+                    {errors.successfulRVP}
+                  </div>
+                )}
+              </div>
+
               {/* Canceled By Code Field */}
               <div style={styles.formGroup}>
                 <label htmlFor="canceledByCode" style={styles.label}>
@@ -656,31 +699,31 @@ const AddDeliveryHistory = () => {
                 )}
               </div>
 
-              {/* Successful RVP Field */}
+              {/* Parcels Return In Hub Field */}
               <div style={styles.formGroup}>
-                <label htmlFor="successfulRVP" style={styles.label}>
-                  Successful RVP *
+                <label htmlFor="parcelsReturnInHub" style={styles.label}>
+                  Parcels Return In Hub *
                 </label>
                 <div style={styles.inputWrapper}>
                   <input
                     type="number"
-                    id="successfulRVP"
-                    name="successfulRVP"
-                    value={formData.successfulRVP}
+                    id="parcelsReturnInHub"
+                    name="parcelsReturnInHub"
+                    value={formData.parcelsReturnInHub}
                     onChange={handleInputChange}
                     onFocus={handleInputFocus}
                     onBlur={handleInputBlur}
                     style={styles.input}
-                    placeholder="Enter successful RVP count"
+                    placeholder="Enter returned parcels count"
                     min="0"
                     disabled={loading}
                   />
-                  <div style={styles.inputIcon}>🔄</div>
+                  <div style={styles.inputIcon}>🏢</div>
                 </div>
-                {errors.successfulRVP && (
+                {errors.parcelsReturnInHub && (
                   <div style={styles.errorMessage}>
                     <span>⚠️</span>
-                    {errors.successfulRVP}
+                    {errors.parcelsReturnInHub}
                   </div>
                 )}
               </div>
@@ -715,35 +758,32 @@ const AddDeliveryHistory = () => {
                 )}
               </div>
 
-              {/* Canceled Compensation Field */}
+              {/* Per Parcel Rate Field */}
               <div style={styles.formGroup}>
-                <label
-                  htmlFor="canceledCompensationPerParcel"
-                  style={styles.label}
-                >
-                  Canceled Compensation (₹) *
+                <label htmlFor="perParcelRate" style={styles.label}>
+                  Per Parcel Rate (₹) *
                 </label>
                 <div style={styles.inputWrapper}>
                   <input
                     type="number"
-                    id="canceledCompensationPerParcel"
-                    name="canceledCompensationPerParcel"
-                    value={formData.canceledCompensationPerParcel}
+                    id="perParcelRate"
+                    name="perParcelRate"
+                    value={formData.perParcelRate}
                     onChange={handleInputChange}
                     onFocus={handleInputFocus}
                     onBlur={handleInputBlur}
                     style={styles.input}
-                    placeholder="Enter compensation per canceled parcel"
-                    min="0"
-                    step="0.01"
+                    placeholder="Enter rate per parcel"
+                    min="1"
+                    max="1000"
                     disabled={loading}
                   />
-                  <div style={styles.inputIcon}>💳</div>
+                  <div style={styles.inputIcon}>💰</div>
                 </div>
-                {errors.canceledCompensationPerParcel && (
+                {errors.perParcelRate && (
                   <div style={styles.errorMessage}>
                     <span>⚠️</span>
-                    {errors.canceledCompensationPerParcel}
+                    {errors.perParcelRate}
                   </div>
                 )}
               </div>

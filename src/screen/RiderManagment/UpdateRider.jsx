@@ -537,7 +537,6 @@ const UpdateRider = () => {
           <div style={styles.riderInfo}>
             <div style={styles.riderName}>{originalData.name}</div>
             <div style={styles.riderEarnings}>
-              💰 {formatCurrency(originalData.totalEarnings)} Total Earnings
             </div>
           </div>
         )}
