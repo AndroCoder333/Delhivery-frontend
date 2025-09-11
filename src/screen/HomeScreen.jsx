@@ -130,13 +130,13 @@ const HomeScreen = () => {
 
   const handleExpenseManagement = () => {
     console.log("Navigate to Expense Management");
+    window.location.href = "expence-profit";
     // Add your navigation logic here
   };
 
   return (
     <div style={styles.container}>
       <Header />
-
       {/* Main Content */}
       <main style={styles.main}>
         <div style={styles.titleSection}>

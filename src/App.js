@@ -10,6 +10,8 @@ import DeliveryHistoryList from "./screen/RiderManagment/DelhiveryHistoryList";
 import AddDelhiveryHistory from "./screen/RiderManagment/AddDelhiveryHistory";
 import DebtManagement from "./screen/RiderManagment/DebtManagement";
 import PaidHistoryList from "./screen/RiderManagment/PaidHistoryList";
+import ExpanseProfitList from "./screen/ExpanceManagment/ExpanseProfitList";
+import AddExpenseProfit from "./screen/ExpanceManagment/AddExpenseProfit";
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
         <Route path="/add-delhivery-history/:riderId" element={<AddDelhiveryHistory />}/>
         <Route path="/debt-management/:riderId" element={<DebtManagement />} />
         <Route path="/paid-history/:riderId" element={<PaidHistoryList />} />
+        <Route path="/expence-profit" element={<ExpanseProfitList />} />
+        <Route path="/add-expence-profit" element={<AddExpenseProfit />} />
       </Routes>
     </BrowserRouter>
   );
